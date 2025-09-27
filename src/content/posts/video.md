@@ -1,7 +1,7 @@
 ---
 title: How to Edit Video with AI
 published: 2026-09-25
-description: This is my first post that just includes a link to one of my videos.
+description: This is my first post detailing how to edit video with AI using Automatic1111 and stable diffusion.
 tags: [2K26, Video]
 category: AI
 draft: false
