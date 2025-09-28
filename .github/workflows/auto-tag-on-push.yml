@@ -1,35 +1,38 @@
 name: Auto Tag on Push
 
 on:
-    push:
-        branches:
-            - master
+  push:
+    branches:
+      - master
 
 jobs:
-    tag:
-        runs-on: ubuntu-latest
-        steps:
-            - name: Check out repo
-              uses: actions/checkout@v4
+  tag:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0 # important to fetch all tags and history
 
-            - name: Set up date variables
-              id: date
-              run: |
-                  DATE_TAG=$(date -u +"%y.%m.%d")
-                  echo "DATE_TAG=$DATE_TAG" >> $GITHUB_ENV
+      - name: Set up date variables
+        id: date
+        run: |
+          DATE_TAG=$(date -u +"%y.%m.%d")
+          echo "DATE_TAG=$DATE_TAG" >> $GITHUB_ENV
 
-            - name: Create or move tags
-              run: |
-                  git config user.name "github-actions[bot]"
-                  git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+      - name: Create or move tags
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-                  # Tag with current date format (YY.MM.DD)
-                  git tag -f "$DATE_TAG"
+          # Tag with current date format (YY.MM.DD)
+          git tag -f "$DATE_TAG"
 
-                  # Update 'latest' tag to this commit
-                  git tag -f latest
+          # Update 'latest' tag to this commit
+          git tag -f latest
 
-            - name: Push tags to origin
-              run: |
-                  git push origin --force "$DATE_TAG"
-                  git push origin --force latest
+      - name: Push tags to origin
+        run: |
+          git push origin --force "$DATE_TAG"
+          git push origin --force latest
