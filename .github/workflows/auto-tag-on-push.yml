@@ -31,8 +31,7 @@ jobs:
 
           # Update 'latest' tag to this commit
           git tag -f latest
-
-      - name: Push tags to origin
-        run: |
-          git push origin --force "$DATE_TAG"
-          git push origin --force latest
+      - name: Set git remote with PAT
+        run: git remote set-url origin https://x-access-token:${{ secrets.PAT_TOKEN }}@github.com/${{ github.repository }}
+      - name: Push tags
+        run: git push --force "$DATE_TAG" && git push --force latest
