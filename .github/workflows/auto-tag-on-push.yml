@@ -22,7 +22,7 @@ jobs:
 
       - name: Set up date tag
         id: date
-        run: echo "DATE_TAG=$(date -u +'%y.%m.%d')" >> "$GITHUB_OUTPUT"
+        run: echo "DATE_TAG=$(date -u +'%y.%m.%d.%H.%M.%S')" >> "$GITHUB_OUTPUT"
 
       - name: Create and Push Tags
         run: |
