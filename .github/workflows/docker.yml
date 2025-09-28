@@ -22,7 +22,8 @@ jobs:
       - name: Get latest release tag
         id: get_latest_release
         run: |
-          LATEST_TAG=$(gh release list --repo ${{ github.repository }} --limit 1 --json tagName -q '.[0].tagName')
+          # Fetch the latest release tag from GitHub API
+          LATEST_TAG=$(curl -s https://api.github.com/repos/${GITHUB_REPOSITORY}/releases/latest | jq -r .tag_name)
           echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_ENV
 
       - name: Build and push
