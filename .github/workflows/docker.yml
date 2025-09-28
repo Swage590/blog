@@ -2,7 +2,7 @@ name: Build and Push Docker image
 
 on:
   workflow_run:
-    workflows: ["Auto Tag on Push"] # Must match the name of the first workflow
+    workflows: ["Auto Tag and Release on Push"] # Must match the name of the first workflow
     types:
       - completed # Runs when the first workflow finishes
 
