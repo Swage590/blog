@@ -15,27 +15,26 @@ jobs:
           token: ${{ secrets.PAT_TOKEN }}
           fetch-depth: 0 # important to fetch all tags and history
 
-      - name: Set up date tags
+      - name: Set up date tag
         id: date
-        run: |
-          DATE_TAG=$(date -u +"%y.%m.%d")
-          echo "DATE_TAG=$DATE_TAG" >> $GITHUB_ENV
+        run: echo "DATE_TAG=$(date -u +'%y.%m.%d')" >> "$GITHUB_OUTPUT"
 
-      - name: Create tags
+      - name: Create and Push Tags
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          # Tag with current date
-          git tag -f "$DATE_TAG"
-
-          # Tag 'latest' pointing to current commit
+          # Create date and latest tags
+          git tag -f "${{ steps.date.outputs.DATE_TAG }}"
           git tag -f latest
 
-      - name: Push tags to GitHub
+          # Push both tags
+          git push origin --force "${{ steps.date.outputs.DATE_TAG }}" latest
+
+      - name: Create GitHub Release 🎉
+        uses: actions/create-release@v1
         env:
-          PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
-        run: |
-          git remote set-url origin https://x-access-token:${PAT_TOKEN}@github.com/${{ github.repository }}.git
-          git push origin "$DATE_TAG" --force
-          git push origin latest --force
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.date.outputs.DATE_TAG }}
+          release_name: Release ${{ steps.date.outputs.DATE_TAG }}
