@@ -34,4 +34,6 @@ jobs:
       - name: Set git remote with PAT
         run: git remote set-url origin https://x-access-token:${{ secrets.PAT_TOKEN }}@github.com/${{ github.repository }}
       - name: Push tags
-        run: git push --force "$DATE_TAG" && git push --force latest
+        run: |
+          git push origin "$DATE_TAG" --force
+          git push origin latest --force
