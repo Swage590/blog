@@ -1,4 +1,4 @@
-name: Auto Tag on Push
+name: Auto Tag and Release on Push
 
 on:
   push:
@@ -6,16 +6,19 @@ on:
       - master
 
 jobs:
-  tag:
+  tag-and-release:
     runs-on: ubuntu-latest
+    # This single permissions block controls both push and release access
     permissions:
       contents: write
+
     steps:
       - name: Check out repo
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.PAT_TOKEN }}
-          fetch-depth: 0 # important to fetch all tags and history
+          # Use the GITHUB_TOKEN instead of a PAT
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
 
       - name: Set up date tag
         id: date
@@ -26,11 +29,10 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          # Create date and latest tags
           git tag -f "${{ steps.date.outputs.DATE_TAG }}"
           git tag -f latest
 
-          # Push both tags
+          # The push now works without changing the remote URL
           git push origin --force "${{ steps.date.outputs.DATE_TAG }}" latest
 
       - name: Create GitHub Release 🎉
